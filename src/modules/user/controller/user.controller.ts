@@ -1,25 +1,16 @@
 import { Request, Response } from "express";
-import { getRepository } from 'typeorm';
 import { UserModel } from '../model/user.model';
-import { v4 as uuid} from 'uuid';
+import { CreateNewUserService } from '../services/createNewUserService';
 
 class UserController {
 
-    async create(request: Request, response: Response): Promise<Response> {
+    async create(request: Request, response: Response): Promise<Response<UserModel>> {
         const {name,email, password} = request.body;
-        const repository = getRepository(UserModel);
-    
-        const users = repository.create({
-            id: uuid(), 
-            name,
-            email, 
-            password
-        })
-        const userSaved = await repository.save(users);
-    
+        const createUserService = new CreateNewUserService();
+        const userSaved = await createUserService.execute({name,email, password})
+
         return response.status(201).json(userSaved);
     }
-
 }
 
 export { UserController };

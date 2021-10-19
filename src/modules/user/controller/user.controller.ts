@@ -7,11 +7,19 @@ import { ListUserService } from "../services/ListUserService";
 class UserController implements UserControllerProtocols {
 
     async create(request: Request, response: Response): Promise<Response<UserModel>> {
-        const {name,email, password} = request.body;
-        const createUserService = new CreateNewUserService();
-        const userSaved = await createUserService.execute({name,email, password})
-
-        return response.status(201).json(userSaved);
+        try {
+            const {name,email, password} = request.body;
+            const createUserService = new CreateNewUserService();
+            const userSaved = await createUserService.execute({name,email, password})
+    
+            return response.status(userSaved.status).json({
+                data: userSaved.data, 
+                msg: userSaved.msg
+            });
+        } catch (error) {
+            return response.status(500);
+        }
+       
     }
 
     async list(request: Request, response: Response): Promise<Response<UserModel[]>>{

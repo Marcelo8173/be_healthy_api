@@ -2,19 +2,21 @@ import { getRepository } from "typeorm";
 import { UserModel } from "../model/user.model";
 import { UserDTO } from "../userDTO/user.DTO";
 import { CreateNewUserResponse } from "./responseProtocols/createNewUserResponse";
-import { BCryptHashProvider } from '../../providers/BcrypImplementation'
+import { UserRepository } from '../repository/user.repository';
 
 
 class CreateNewUserService {
+
+    private userRespository;
+
+    constructor(){
+        this.userRespository = new UserRepository
+    }
+
     async execute(data: UserDTO): Promise<CreateNewUserResponse>{
-        const bCryptHashProvider = new BCryptHashProvider();
         const repository = getRepository(UserModel);
         
-        const emailExist = await repository.findOne({
-            where: {
-                email: data.email
-            }
-        });
+        const emailExist = await this.userRespository.findEmailExist(data.email);
 
         if(emailExist){
             return {
@@ -23,12 +25,7 @@ class CreateNewUserService {
             }
         }
 
-        const users: UserDTO = repository.create({
-            email: data.email,
-            password: await bCryptHashProvider.generateHash(data.password),
-            name: data.name,
-        });
-        const userSaved = await repository.save(users);
+        const userSaved = await this.userRespository.createNewUser(data);
 
         return {
             msg: 'user created',

@@ -36,6 +36,13 @@ class UserRepository {
         }
         return false;
     }
+
+    async listAllUser(): Promise<UserModel[]>{
+        const listUsers = await this.userRepository.query(`
+            SELECT * FROM users
+        `);
+        return listUsers;
+    }
 }
 
 export { UserRepository };

@@ -1,13 +1,16 @@
 import { getRepository } from "typeorm";
 import { UserModel } from "../model/user.model";
+import { UserRepository } from '../repository/user.repository';
 
 class ListUserService {
-    async execute(): Promise<UserModel[]>{
-        const repository = getRepository(UserModel);
+    private userRespository;
 
-        const listUsers = await repository.query(`
-            SELECT * FROM users
-        `);
+    constructor(){
+        this.userRespository = new UserRepository;
+    }
+
+    async execute(): Promise<UserModel[]>{
+        const listUsers = this.userRespository.listAllUser();
 
         return listUsers
     }

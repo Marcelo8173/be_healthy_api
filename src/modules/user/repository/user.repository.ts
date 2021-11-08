@@ -38,7 +38,7 @@ class UserRepository {
 
   async listAllUser(): Promise<UserModel[]> {
     const listUsers = await this.userRepository.query(`
-            SELECT * FROM users
+            SELECT id, name, email FROM users
         `);
     return listUsers;
   }

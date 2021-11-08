@@ -1,13 +1,10 @@
-import { request, response, Router } from "express";
-// import { UserController } from '../controller/user.controller';
+import { Router } from "express";
+import { DailyController } from "../controller/daily.controller";
 
-
-// const userController = new UserController();
+const dailyController = new DailyController();
 const dailyRouter = Router();
 
-dailyRouter.post('/', (request, response) => {
-    console.log('aqui')
-});
+dailyRouter.post("/", dailyController.create);
 // userRouter.get('/', userController.list);
 
 export { dailyRouter };
